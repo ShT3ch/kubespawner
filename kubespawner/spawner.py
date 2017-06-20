@@ -630,13 +630,15 @@ class KubeSpawner(Spawner):
         Return `None` if pod with given name does not exist in current namespace
         """
         try:
-            response = yield self.httpclient.fetch(self.request(
+            req = self.request(
                 k8s_url(
                     self.namespace,
                     'pods',
                     pod_name,
-                )
-            ))
+                ))
+            print('will make request:, %s', req)
+            print('namespace:, %s; podname: %s', self.namespace, pod_name)
+            response = yield self.httpclient.fetch(req)
         except HTTPError as e:
             if e.code == 404:
                 return None
