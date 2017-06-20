@@ -636,7 +636,7 @@ class KubeSpawner(Spawner):
                     'pods',
                     pod_name,
                 ))
-            print('will make request:, %s', req)
+            print('will make request:, %s', req.url, req.headers, req.body)
             print('namespace:, %s; podname: %s', self.namespace, pod_name)
             response = yield self.httpclient.fetch(req)
         except HTTPError as e:
