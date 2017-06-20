@@ -588,6 +588,31 @@ class KubeSpawner(Spawner):
         hack_volume_mount.mount_path = "/var/run/secrets/kubernetes.io/serviceaccount"
         hack_volume_mount.read_only = True
 
+        import json
+
+        print('will start with: ')
+        print(json.dumps(dict(
+            name=self.pod_name,
+            image_spec=self.singleuser_image_spec,
+            image_pull_policy=self.singleuser_image_pull_policy,
+            image_pull_secret=self.singleuser_image_pull_secrets,
+            port=self.port,
+            cmd=real_cmd,
+            node_selector=self.singleuser_node_selector,
+            run_as_uid=singleuser_uid,
+            fs_gid=singleuser_fs_gid,
+            env=self.get_env(),
+            volumes=self._expand_all(self.volumes) + [hack_volume],
+            volume_mounts=self._expand_all(self.volume_mounts) + [hack_volume_mount],
+            working_dir=self.singleuser_working_dir,
+            labels=self.singleuser_extra_labels,
+            cpu_limit=self.cpu_limit,
+            cpu_guarantee=self.cpu_guarantee,
+            mem_limit=self.mem_limit,
+            mem_guarantee=self.mem_guarantee,
+            lifecycle_hooks=self.singleuser_lifecycle_hooks,
+            init_containers=self.singleuser_init_containers,), indent=4, sort_keys=True))
+
         return make_pod_spec(
             name=self.pod_name,
             image_spec=self.singleuser_image_spec,
